@@ -26,20 +26,6 @@ public class TaskStore {
         gson = new Gson();
     }
 
-    public int getTaskCount() throws TaskStoreException {
-        // read count from store
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Main.class.getClassLoader().getResourceAsStream(STORE_PATH))))) {
-            Store data = gson.fromJson(reader, Store.class);
-            return data.getCount();
-        }
-        catch (NullPointerException e) {
-            throw new TaskStoreException("Unable to read task count.", e);
-        }
-        catch (IOException e) {
-            throw new TaskStoreException("Unable to read from store.", e);
-        }
-    }
-
     public void addTask(Task task) throws TaskStoreException {
         System.out.println("Add: saving new task - \"" + task.toShortString() + "\"...");
         Store savedData = readStore();

@@ -37,7 +37,7 @@ public final class ActionProcessor {
 
     public void list(String rawStatus) throws ActionProcessingException {
         List listAction = new List(rawStatus);
-        Task[] tasks = {};
+        Task[] tasks;
 
         try {
             listAction.validate();
@@ -56,8 +56,10 @@ public final class ActionProcessor {
         }
 
         System.out.println("List: retrieved " + tasks.length + " task(s)");
+        System.out.println("\tSTATUS\t|\tTASK");
+        System.out.println("--------------------------------------------------");
         for (Task t : tasks) {
-            System.out.println("\t - " + t.toShortString());
+            System.out.println("\t" + t.getStatus() + "\t|\t" + t.toShortString());
         }
     }
 
