@@ -21,7 +21,7 @@ public class Main {
 
         switch (action) {
             case "add": {
-                String taskStatus = actionRestArgs[0];
+                String taskStatus = actionRestArgs.length > 0 ? actionRestArgs[0] : "";
                 processor.add(taskStatus);
                 break;
             }
@@ -63,11 +63,8 @@ public class Main {
                 break;
             }
             case "list": {
-                // TODO:
-                //  arg optional
-                //  if present validate arg - has to be string and actual category from predefined list
-                String category = actionRestArgs.length == 0 ? "all" : actionRestArgs[0];
-                System.out.println("listing task category - " + category);
+                String status = actionRestArgs.length > 0 ? actionRestArgs[0] : "";
+                processor.list(status);
                 break;
             }
             default: {

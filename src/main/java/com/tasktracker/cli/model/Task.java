@@ -4,8 +4,8 @@ import java.util.Calendar;
 
 public class Task {
     int id = -1;
-    String description = "";
-    Status status = Status.TODO;
+    String description;
+    Status status;
     long createdAt;
     long updatedAt;
 
@@ -27,15 +27,17 @@ public class Task {
     }
 
     public int getId() {
-        return this.id;
+        return id;
     }
 
+    public Status getStatus() { return status; }
+
     public String toShortString() {
-        return this.description;
+        return description;
     }
 
     @Override
     public String toString() {
-        return "\n\tid: " + this.id + "\n\tdescription: " + this.description + "\n\tstatus: " + this.status + "\n\tcreatedAt: " + this.createdAt + "\n\tupdatedAt: " + this.updatedAt;
+        return "\n\tid: " + id + "\n\tdescription: " + description + "\n\tstatus: " + status + "\n\tcreatedAt: " + createdAt + "\n\tupdatedAt: " + updatedAt;
     }
 }

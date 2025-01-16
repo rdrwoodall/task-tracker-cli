@@ -1,5 +1,7 @@
 package com.tasktracker.cli.model;
 
+import com.tasktracker.cli.exception.ActionValidationException;
+
 public class Add extends Action {
     private final String description;
 
@@ -12,8 +14,10 @@ public class Add extends Action {
     }
 
     @Override
-    protected void validateInputs() {
-        // TODO: needs to be implemented
-        System.out.println("Add: validating inputs");
+    protected void validateInputs() throws ActionValidationException {
+        // no empty or whitespace only values
+        if (this.description.isBlank()) {
+            throw new ActionValidationException("No task description provided.");
+        }
     }
 }
