@@ -1,7 +1,7 @@
 package com.tasktracker.cli;
 
+import com.tasktracker.cli.exception.ActionProcessingException;
 import com.tasktracker.cli.exception.ActionValidationException;
-import com.tasktracker.cli.exception.TaskStoreException;
 import com.tasktracker.cli.model.Add;
 import com.tasktracker.cli.model.List;
 import com.tasktracker.cli.model.Status;
@@ -19,10 +19,7 @@ public final class ActionProcessor {
         this.store = new TaskStore();
     }
 
-    // TODO: how do I handle errors from store or validation failures?
-    //  throw and catch error in main?
-
-    public void add(String taskStatus) {
+    public void add(String taskStatus) throws ActionProcessingException {
         Add addAction = new Add(taskStatus);
 
         try {
@@ -30,26 +27,15 @@ public final class ActionProcessor {
             Task task = new Task(addAction.getDescription(), Status.TODO);
             this.store.addTask(task);
         }
-        // TODO: may decide to throw exceptions to parent and log there instead,
-        //  that way we can possibly exit the main loop with a valid return code.
         catch (ActionValidationException e) {
-            System.err.println("Add Failed.");
-            System.err.println("ActionValidationException: " + e.getMessage());
-        }
-        catch (TaskStoreException e) {
-            System.err.println("Add Failed.");
-            System.err.println("TaskStoreException - Root issue: " + e.getCause().getMessage());
-            System.err.println("TaskStoreException - Resulting issue: " + e.getMessage());
+            throw new ActionProcessingException(e.getMessage(), e);
         }
         catch (Exception e) {
-            System.err.println("Add Failed.");
-            System.err.println("Exception - Root issue: " + e.getCause().getMessage());
-            System.err.println("Exception - Resulting issue: " + e.getMessage());
+            throw new ActionProcessingException(e.getMessage(), e.getCause());
         }
     }
 
-    public void list(String rawStatus) {
-        // temporary action until rawStatus is validated
+    public void list(String rawStatus) throws ActionProcessingException {
         List listAction = new List(rawStatus);
         Task[] tasks = {};
 
@@ -57,24 +43,11 @@ public final class ActionProcessor {
             listAction.validate();
             tasks = this.store.getTasks(listAction);
         }
-        // TODO: may decide to throw exceptions to parent and log there instead,
-        //  that way we can possibly exit the main loop with a valid return code.
         catch (ActionValidationException e) {
-            System.err.println("List Failed.");
-            System.err.println("ActionValidationException: " + e.getMessage());
-            return;
-        }
-        catch (TaskStoreException e) {
-            System.err.println("List Failed.");
-            System.err.println("TaskStoreException - Root issue: " + e.getCause().getMessage());
-            System.err.println("TaskStoreException - Resulting issue: " + e.getMessage());
-            return;
+            throw new ActionProcessingException(e.getMessage(), e);
         }
         catch (Exception e) {
-            System.err.println("List Failed.");
-            System.err.println("Exception - Root issue: " + e.getCause().getMessage());
-            System.err.println("Exception - Resulting issue: " + e.getMessage());
-            return;
+            throw new ActionProcessingException(e.getMessage(), e.getCause());
         }
 
         if (tasks.length == 0) {
@@ -88,7 +61,7 @@ public final class ActionProcessor {
         }
     }
 
-    public void update(int id, String status) {
+    public void update(int id, String status) throws ActionProcessingException {
 
     }
 }

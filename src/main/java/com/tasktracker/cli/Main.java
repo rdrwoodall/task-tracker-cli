@@ -1,5 +1,6 @@
 package com.tasktracker.cli;
 
+import com.tasktracker.cli.exception.ActionProcessingException;
 import com.tasktracker.cli.model.Update;
 
 import java.util.Arrays;
@@ -22,7 +23,11 @@ public class Main {
         switch (action) {
             case "add": {
                 String taskStatus = actionRestArgs.length > 0 ? actionRestArgs[0] : "";
-                processor.add(taskStatus);
+                try {
+                    processor.add(taskStatus);
+                } catch (ActionProcessingException e) {
+                    handleActionProcessingError(action, e);
+                }
                 break;
             }
             case "update": {
@@ -64,12 +69,29 @@ public class Main {
             }
             case "list": {
                 String status = actionRestArgs.length > 0 ? actionRestArgs[0] : "";
-                processor.list(status);
+                try {
+                    processor.list(status);
+                } catch (ActionProcessingException e) {
+                    handleActionProcessingError(action , e);
+                }
                 break;
             }
             default: {
                 System.err.println("Unknown action, select from [add | update | delete | mark-in-progress | mark-done | list]");
             }
         }
+    }
+
+    private static void handleActionProcessingError(String action, ActionProcessingException e) {
+        String rootIssueMessage = e.getCause().getMessage();
+        String resultingIssueMessage = e.getMessage();
+
+        System.err.println("Action '" + action + "' failed!");
+        System.err.println("ActionProcessingException - Root issue: " + rootIssueMessage);
+        if (!rootIssueMessage.equals(resultingIssueMessage)) {
+            System.err.println("ActionProcessingException - Resulting issue: " + e.getMessage());
+        }
+
+        System.exit(1);
     }
 }
