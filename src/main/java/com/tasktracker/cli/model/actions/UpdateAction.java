@@ -1,4 +1,4 @@
-package com.tasktracker.cli.model;
+package com.tasktracker.cli.model.actions;
 
 import com.tasktracker.cli.exception.ActionValidationException;
 

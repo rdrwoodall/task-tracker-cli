@@ -28,6 +28,16 @@ public class Task {
         this.updatedAt = currentTime;
     }
 
+    // for delete task case
+    public Task(int id) {
+        this.id = id;
+        this.description = "";
+        this.status = Status.TODO;
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        this.createdAt = currentTime;
+        this.updatedAt = currentTime;
+    }
+
     // for the add task case after calculating new id
     // copy constructor (sort of, copy everything but id)
     public Task(int id, Task copy) {

@@ -1,6 +1,7 @@
-package com.tasktracker.cli.model;
+package com.tasktracker.cli.model.actions;
 
 import com.tasktracker.cli.exception.ActionValidationException;
+import com.tasktracker.cli.model.Status;
 
 public class ListAction extends Action {
     private static final String STATUS_STRING_DONE = "done";

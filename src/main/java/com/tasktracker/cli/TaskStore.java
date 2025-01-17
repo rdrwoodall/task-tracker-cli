@@ -2,7 +2,7 @@ package com.tasktracker.cli;
 
 import com.google.gson.Gson;
 import com.tasktracker.cli.exception.TaskStoreException;
-import com.tasktracker.cli.model.ListAction;
+import com.tasktracker.cli.model.actions.ListAction;
 import com.tasktracker.cli.model.Status;
 import com.tasktracker.cli.model.Store;
 import com.tasktracker.cli.model.Task;
@@ -68,8 +68,9 @@ public class TaskStore {
             throw new TaskStoreException("Task list is empty");
         }
 
-        var filteredItems = currentTasks.stream().filter(t -> t.getId() == task.getId()).toList();
-        if (filteredItems.isEmpty()) {
+        // make sure the task to update is in the list
+        var foundTaskToUpdateList = currentTasks.stream().filter(t -> t.getId() == task.getId()).toList();
+        if (foundTaskToUpdateList.isEmpty()) {
             // did not find item with id user provided
             throw new TaskStoreException("Task id '" + task.getId() + "' does not exist");
         }
@@ -85,7 +86,32 @@ public class TaskStore {
         Store nextJson = gson.fromJson(gson.toJson(nextStore), Store.class);
 
         writeTasksToStore(nextJson);
-        System.out.println("Update: successfully updated task id [" + task.getId() + "] with description - " + task.getDescription());
+        System.out.println("Update: successfully modified task id [" + task.getId() + "] with description - " + task.getDescription());
+    }
+
+    public void deleteTask(Task task) throws TaskStoreException {
+        Store savedData = readStore();
+        List<Task> currentTasks = savedData.getTasks();
+
+        if (currentTasks.isEmpty()) {
+            throw new TaskStoreException("Task list is empty");
+        }
+
+        // make sure the task to update is in the list
+        var foundTaskToUpdateList = currentTasks.stream().filter(t -> t.getId() == task.getId()).toList();
+        if (foundTaskToUpdateList.isEmpty()) {
+            // did not find item with id user provided
+            throw new TaskStoreException("Task id '" + task.getId() + "' does not exist");
+        }
+
+        var nextTasks = currentTasks.stream().filter(t -> t.getId() != task.getId()).toList();
+
+        // create an updated Store object
+        Store nextStore = new Store(nextTasks);
+        Store nextJson = gson.fromJson(gson.toJson(nextStore), Store.class);
+
+        writeTasksToStore(nextJson);
+        System.out.println("Delete: successfully removed task id [" + task.getId() + "]");
     }
 
     private static void verifyStoreLoaded() throws TaskStoreException {

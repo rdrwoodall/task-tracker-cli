@@ -3,6 +3,10 @@ package com.tasktracker.cli;
 import com.tasktracker.cli.exception.ActionProcessingException;
 import com.tasktracker.cli.exception.ActionValidationException;
 import com.tasktracker.cli.model.*;
+import com.tasktracker.cli.model.actions.AddAction;
+import com.tasktracker.cli.model.actions.DeleteAction;
+import com.tasktracker.cli.model.actions.ListAction;
+import com.tasktracker.cli.model.actions.UpdateAction;
 
 import java.util.List;
 
@@ -69,6 +73,24 @@ public final class ActionProcessor {
             updateAction.validateInputs();
             Task task = new Task(updateAction.getId(), updateAction.getDescription());
             this.store.updateTask(task);
+        }
+        catch (ActionValidationException e) {
+            throw new ActionProcessingException(e.getMessage(), e);
+        }
+        catch (Exception e) {
+            throw new ActionProcessingException(e.getMessage(), e.getCause());
+        }
+
+
+    }
+
+    public void delete(int id) throws ActionProcessingException {
+        DeleteAction deleteActionAction = new DeleteAction(id);
+
+        try {
+            deleteActionAction.validateInputs();
+            Task task = new Task(deleteActionAction.getId());
+            this.store.deleteTask(task);
         }
         catch (ActionValidationException e) {
             throw new ActionProcessingException(e.getMessage(), e);

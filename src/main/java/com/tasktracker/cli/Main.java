@@ -40,9 +40,13 @@ public class Main {
                 break;
             }
             case "delete": {
-                // TODO: arg required, validate arg - has to be integer and id present in json
-                int taskId = Integer.parseInt(actionRestArgs[0]);
-                System.out.println("deleting task '" + taskId + "'");
+                int taskId = actionRestArgs.length > 0 ? Integer.parseInt(actionRestArgs[0]) : -1;
+                String taskStatus = actionRestArgs.length > 1 ? actionRestArgs[1] : "";
+                try {
+                    processor.delete(taskId);
+                } catch (ActionProcessingException e) {
+                    handleException(action, e);
+                }
                 break;
             }
             case "mark-in-progress": {
@@ -55,6 +59,12 @@ public class Main {
                 // TODO: arg required, validate arg - has to be integer and id present in json
                 int taskId = Integer.parseInt(actionRestArgs[0]);
                 System.out.println("marking " + taskId + " done");
+                break;
+            }
+            case "mark-todo": {
+                // TODO: arg required, validate arg - has to be integer and id present in json
+                int taskId = Integer.parseInt(actionRestArgs[0]);
+                System.out.println("marking " + taskId + " todo");
                 break;
             }
             case "list": {
