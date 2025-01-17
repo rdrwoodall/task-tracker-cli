@@ -1,5 +1,9 @@
 # TaskTrackerCli
-A CLI task app
+A CLI task app to refresh java and play with maven.
+
+It's been years since I really touched java, so I'm refreshing it with small projects like this. 
+
+I'm adding in build/deploy setup to each as project as well to update myself with the ecosystem a bit more.
 
 # To run locally
 ```bash
