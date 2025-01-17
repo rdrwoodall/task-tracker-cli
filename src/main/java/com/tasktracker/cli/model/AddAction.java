@@ -2,21 +2,21 @@ package com.tasktracker.cli.model;
 
 import com.tasktracker.cli.exception.ActionValidationException;
 
-public class Add extends Action {
+public class AddAction extends Action {
     private final String description;
 
-    public Add(String description) {
+    public AddAction(String description) {
         this.description = description;
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     @Override
     protected void validateInputs() throws ActionValidationException {
         // no empty or whitespace only values
-        if (this.description.isBlank()) {
+        if (description.isBlank()) {
             throw new ActionValidationException("No task description provided.");
         }
     }

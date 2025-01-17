@@ -2,10 +2,9 @@ package com.tasktracker.cli;
 
 import com.tasktracker.cli.exception.ActionProcessingException;
 import com.tasktracker.cli.exception.ActionValidationException;
-import com.tasktracker.cli.model.Add;
-import com.tasktracker.cli.model.List;
-import com.tasktracker.cli.model.Status;
-import com.tasktracker.cli.model.Task;
+import com.tasktracker.cli.model.*;
+
+import java.util.List;
 
 /**
  * ActionProcessor is responsible for generating an Action and Task based on the users input.
@@ -20,11 +19,11 @@ public final class ActionProcessor {
     }
 
     public void add(String taskStatus) throws ActionProcessingException {
-        Add addAction = new Add(taskStatus);
+        AddAction addAction = new AddAction(taskStatus);
 
         try {
             addAction.validate();
-            Task task = new Task(addAction.getDescription(), Status.TODO);
+            Task task = new Task(addAction.getDescription());
             this.store.addTask(task);
         }
         catch (ActionValidationException e) {
@@ -36,8 +35,8 @@ public final class ActionProcessor {
     }
 
     public void list(String rawStatus) throws ActionProcessingException {
-        List listAction = new List(rawStatus);
-        Task[] tasks;
+        ListAction listAction = new ListAction(rawStatus);
+        List<Task> tasks;
 
         try {
             listAction.validate();
@@ -50,20 +49,34 @@ public final class ActionProcessor {
             throw new ActionProcessingException(e.getMessage(), e.getCause());
         }
 
-        if (tasks.length == 0) {
+        if (tasks.isEmpty()) {
             System.out.println("List: no tasks found");
             return;
         }
 
-        System.out.println("List: retrieved " + tasks.length + " task(s)");
-        System.out.println("\tSTATUS\t|\tTASK");
+        System.out.println("List: retrieved " + tasks.size() + " task(s)");
+        System.out.println("\tID\t|\tSTATUS\t|\tTASK");
         System.out.println("--------------------------------------------------");
         for (Task t : tasks) {
-            System.out.println("\t" + t.getStatus() + "\t|\t" + t.toShortString());
+            System.out.println("\t" + t.getId() + "\t|\t" + t.getStatus() + "\t|\t" + t.getDescription());
         }
     }
 
     public void update(int id, String status) throws ActionProcessingException {
+        UpdateAction updateAction = new UpdateAction(id, status);
+
+        try {
+            updateAction.validateInputs();
+            Task task = new Task(updateAction.getId(), updateAction.getDescription());
+            this.store.updateTask(task);
+        }
+        catch (ActionValidationException e) {
+            throw new ActionProcessingException(e.getMessage(), e);
+        }
+        catch (Exception e) {
+            throw new ActionProcessingException(e.getMessage(), e.getCause());
+        }
+
 
     }
 }

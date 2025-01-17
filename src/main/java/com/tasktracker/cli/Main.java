@@ -1,7 +1,6 @@
 package com.tasktracker.cli;
 
 import com.tasktracker.cli.exception.ActionProcessingException;
-import com.tasktracker.cli.model.Update;
 
 import java.util.Arrays;
 
@@ -26,27 +25,18 @@ public class Main {
                 try {
                     processor.add(taskStatus);
                 } catch (ActionProcessingException e) {
-                    handleActionProcessingError(action, e);
+                    handleException(action, e);
                 }
                 break;
             }
             case "update": {
-                // TODO: args required, validate args
-                //  id - int and id present in json
-                //  status - String
-                int taskId = Integer.parseInt(actionRestArgs[0]);
-                String taskStatus = actionRestArgs[1];
-                Update update = new Update(taskId, taskStatus);
-
-                // TODO: wire up validation here
+                int taskId = actionRestArgs.length > 0 ? Integer.parseInt(actionRestArgs[0]) : -1;
+                String taskStatus = actionRestArgs.length > 1 ? actionRestArgs[1] : "";
                 try {
-                    update.validateInputs();
-                } catch (Exception e) {
-                    System.err.println("Ooops");
-                    return;
+                    processor.update(taskId, taskStatus);
+                } catch (ActionProcessingException e) {
+                    handleException(action, e);
                 }
-
-                System.out.println("updating task '" + taskId + "' with status '" + taskStatus + "'");
                 break;
             }
             case "delete": {
@@ -72,7 +62,7 @@ public class Main {
                 try {
                     processor.list(status);
                 } catch (ActionProcessingException e) {
-                    handleActionProcessingError(action , e);
+                    handleException(action , e);
                 }
                 break;
             }
@@ -82,14 +72,14 @@ public class Main {
         }
     }
 
-    private static void handleActionProcessingError(String action, ActionProcessingException e) {
-        String rootIssueMessage = e.getCause().getMessage();
+    private static void handleException(String action, ActionProcessingException e) {
+        String rootIssueMessage = e.getCause() == null ? e.getMessage() : e.getCause().getMessage();
         String resultingIssueMessage = e.getMessage();
 
         System.err.println("Action '" + action + "' failed!");
         System.err.println("ActionProcessingException - Root issue: " + rootIssueMessage);
         if (!rootIssueMessage.equals(resultingIssueMessage)) {
-            System.err.println("ActionProcessingException - Resulting issue: " + e.getMessage());
+            System.err.println("ActionProcessingException - Resulting issue: " + resultingIssueMessage);
         }
 
         System.exit(1);

@@ -2,21 +2,17 @@ package com.tasktracker.cli.model;
 
 import com.tasktracker.cli.exception.ActionValidationException;
 
-public class List extends Action {
+public class ListAction extends Action {
     private static final String STATUS_STRING_DONE = "done";
     private static final String STATUS_STRING_TODO = "todo";
     private static final String STATUS_STRING_IN_PROGRESS = "in-progress";
 
     private Status status;
-    private String rawStatus;
+    private final String rawStatus;
 
-    public List(String rawStatus) {
+    public ListAction(String rawStatus) {
         this.rawStatus = rawStatus;
         status = null;
-    }
-
-    public List(Status status) {
-        this.status = status;
     }
 
     public Status getStatus() {
@@ -31,6 +27,8 @@ public class List extends Action {
             return;
         }
 
+        // handles setting the string status to the validated
+        // enum type value for lookup later
         switch(rawStatus) {
             case STATUS_STRING_DONE:
                 status = Status.DONE;

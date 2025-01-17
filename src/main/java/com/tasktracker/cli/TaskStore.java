@@ -2,6 +2,7 @@ package com.tasktracker.cli;
 
 import com.google.gson.Gson;
 import com.tasktracker.cli.exception.TaskStoreException;
+import com.tasktracker.cli.model.ListAction;
 import com.tasktracker.cli.model.Status;
 import com.tasktracker.cli.model.Store;
 import com.tasktracker.cli.model.Task;
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class TaskStore {
     private static final String STORE_FILE = "taskStore.json";
@@ -27,7 +29,7 @@ public class TaskStore {
     }
 
     public void addTask(Task task) throws TaskStoreException {
-        System.out.println("Add: saving new task - \"" + task.toShortString() + "\"...");
+        System.out.println("Add: saving new task - \"" + task.getDescription() + "\"...");
         Store savedData = readStore();
 
         // setup next task with correct id (next size of list) and
@@ -44,19 +46,46 @@ public class TaskStore {
         System.out.println("Add: successfully saved new task with id [" + finalAddTask.getId() + "]");
     }
 
-    public Task[] getTasks(com.tasktracker.cli.model.List action) throws TaskStoreException {
+    public List<Task> getTasks(ListAction action) throws TaskStoreException {
         System.out.println("List: retrieving tasks...");
         Store savedData = readStore();
         Status actionStatus = action.getStatus();
         List<Task> tasks = savedData.getTasks();
 
         if (actionStatus == null) {
-            return tasks.toArray(Task[]::new);
+            return tasks;
         } else {
             System.out.println("List: filtering tasks by status: " + actionStatus);
-            List<Task> filteredTasks = tasks.stream().filter(t -> t.getStatus() == actionStatus).toList();
-            return filteredTasks.toArray(Task[]::new);
+            return tasks.stream().filter(t -> t.getStatus() == actionStatus).collect(Collectors.toList());
         }
+    }
+
+    public void updateTask(Task task) throws TaskStoreException {
+        Store savedData = readStore();
+        List<Task> currentTasks = savedData.getTasks();
+
+        if (currentTasks.isEmpty()) {
+            throw new TaskStoreException("Task list is empty");
+        }
+
+        var filteredItems = currentTasks.stream().filter(t -> t.getId() == task.getId()).toList();
+        if (filteredItems.isEmpty()) {
+            // did not find item with id user provided
+            throw new TaskStoreException("Task id '" + task.getId() + "' does not exist");
+        }
+
+        // insert updated item into list at the place of the original item
+        List<Task> nextTasks = currentTasks.stream().map(t -> {
+            // copy over original task's id/createdAt, use the updated task for other values
+            return t.getId() != task.getId() ? t : new Task(t.getId(), t.getCreatedAt(), task);
+        }).toList();
+
+        // create an updated Store object
+        Store nextStore = new Store(nextTasks);
+        Store nextJson = gson.fromJson(gson.toJson(nextStore), Store.class);
+
+        writeTasksToStore(nextJson);
+        System.out.println("Update: successfully updated task id [" + task.getId() + "] with description - " + task.getDescription());
     }
 
     private static void verifyStoreLoaded() throws TaskStoreException {
