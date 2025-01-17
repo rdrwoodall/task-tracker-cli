@@ -1,12 +1,12 @@
 package com.tasktracker.cli;
 
-import com.tasktracker.cli.exception.ActionProcessingException;
-import com.tasktracker.cli.exception.ActionValidationException;
-import com.tasktracker.cli.model.*;
-import com.tasktracker.cli.model.actions.AddAction;
-import com.tasktracker.cli.model.actions.DeleteAction;
-import com.tasktracker.cli.model.actions.ListAction;
-import com.tasktracker.cli.model.actions.UpdateAction;
+import com.tasktracker.cli.exceptions.ActionProcessingException;
+import com.tasktracker.cli.exceptions.ActionValidationException;
+import com.tasktracker.cli.models.*;
+import com.tasktracker.cli.models.actions.AddAction;
+import com.tasktracker.cli.models.actions.DeleteAction;
+import com.tasktracker.cli.models.actions.ListAction;
+import com.tasktracker.cli.models.actions.UpdateAction;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tasktracker.cli.model;
+package com.tasktracker.cli.models;
 
 public enum Status {
     TODO,

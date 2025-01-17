@@ -1,4 +1,4 @@
-package com.tasktracker.cli.exception;
+package com.tasktracker.cli.exceptions;
 
 public class TaskStoreException extends Exception {
     public TaskStoreException(String errorMessage) { super(errorMessage); }

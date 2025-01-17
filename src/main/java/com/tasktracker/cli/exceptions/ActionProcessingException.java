@@ -1,4 +1,4 @@
-package com.tasktracker.cli.exception;
+package com.tasktracker.cli.exceptions;
 
 public class ActionProcessingException extends Exception {
     public ActionProcessingException(String message, Throwable err) {

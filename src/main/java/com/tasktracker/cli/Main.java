@@ -1,6 +1,6 @@
 package com.tasktracker.cli;
 
-import com.tasktracker.cli.exception.ActionProcessingException;
+import com.tasktracker.cli.exceptions.ActionProcessingException;
 
 import java.util.Arrays;
 

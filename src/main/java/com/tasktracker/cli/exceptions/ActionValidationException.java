@@ -1,4 +1,4 @@
-package com.tasktracker.cli.exception;
+package com.tasktracker.cli.exceptions;
 
 public class ActionValidationException extends Exception {
     public ActionValidationException(String message) {

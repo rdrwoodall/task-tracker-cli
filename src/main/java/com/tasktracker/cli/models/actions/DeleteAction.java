@@ -1,6 +1,6 @@
-package com.tasktracker.cli.model.actions;
+package com.tasktracker.cli.models.actions;
 
-import com.tasktracker.cli.exception.ActionValidationException;
+import com.tasktracker.cli.exceptions.ActionValidationException;
 
 public class DeleteAction extends Action{
     int id;

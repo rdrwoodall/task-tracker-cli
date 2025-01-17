@@ -1,4 +1,4 @@
-package com.tasktracker.cli.model;
+package com.tasktracker.cli.models;
 
 import java.util.List;
 

@@ -1,11 +1,11 @@
 package com.tasktracker.cli;
 
 import com.google.gson.Gson;
-import com.tasktracker.cli.exception.TaskStoreException;
-import com.tasktracker.cli.model.actions.ListAction;
-import com.tasktracker.cli.model.Status;
-import com.tasktracker.cli.model.Store;
-import com.tasktracker.cli.model.Task;
+import com.tasktracker.cli.exceptions.TaskStoreException;
+import com.tasktracker.cli.models.actions.ListAction;
+import com.tasktracker.cli.models.Status;
+import com.tasktracker.cli.models.Store;
+import com.tasktracker.cli.models.Task;
 
 import java.io.*;
 import java.nio.file.Files;
