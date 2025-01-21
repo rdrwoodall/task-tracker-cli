@@ -60,7 +60,19 @@ public class TaskStore {
         }
     }
 
+
+
     public void updateTask(Task task) throws TaskStoreException {
+        update(task);
+        System.out.println("Update: successfully modified task id [" + task.getId() + "] with description - " + task.getDescription());
+    }
+
+    public void markTask(Task task) throws TaskStoreException {
+        update(task);
+        System.out.println("Mark: successfully modified task id [" + task.getId() + "] with status - " + task.getStatus());
+    }
+
+    private void update(Task updatedTask) throws TaskStoreException {
         Store savedData = readStore();
         List<Task> currentTasks = savedData.getTasks();
 
@@ -69,16 +81,24 @@ public class TaskStore {
         }
 
         // make sure the task to update is in the list
-        var foundTaskToUpdateList = currentTasks.stream().filter(t -> t.getId() == task.getId()).toList();
+        var foundTaskToUpdateList = currentTasks.stream().filter(t -> t.getId() == updatedTask.getId()).toList();
         if (foundTaskToUpdateList.isEmpty()) {
             // did not find item with id user provided
-            throw new TaskStoreException("Task id '" + task.getId() + "' does not exist");
+            throw new TaskStoreException("Task id '" + updatedTask.getId() + "' does not exist");
         }
 
+        // `update` actions will have a validated description by now
+        // `mark` actions will have an empty description
+        var isMarkAction = updatedTask.getDescription().isBlank();
+
         // insert updated item into list at the place of the original item
-        List<Task> nextTasks = currentTasks.stream().map(t -> {
-            // copy over original task's id/createdAt, use the updated task for other values
-            return t.getId() != task.getId() ? t : new Task(t.getId(), t.getCreatedAt(), task);
+        List<Task> nextTasks = currentTasks.stream().map(original -> {
+            // copy over original task's id/createdAt and maybe the description/status depending on the action type
+            var nextDescription = isMarkAction ? original.getDescription() : updatedTask.getDescription();
+            var nextStatus = isMarkAction ? updatedTask.getStatus() : original.getStatus();
+            return original.getId() != updatedTask.getId()
+                    ? original
+                    : new Task(original.getId(), nextDescription, nextStatus, original.getCreatedAt(), updatedTask);
         }).toList();
 
         // create an updated Store object
@@ -86,7 +106,6 @@ public class TaskStore {
         Store nextJson = gson.fromJson(gson.toJson(nextStore), Store.class);
 
         writeTasksToStore(nextJson);
-        System.out.println("Update: successfully modified task id [" + task.getId() + "] with description - " + task.getDescription());
     }
 
     public void deleteTask(Task task) throws TaskStoreException {

@@ -18,26 +18,6 @@ public class Task {
         this.updatedAt = currentTime;
     }
 
-    // for update task case
-    public Task(int id, String description) {
-        this.id = id;
-        this.description = description;
-        this.status = Status.TODO;
-        long currentTime = Calendar.getInstance().getTimeInMillis();
-        this.createdAt = currentTime;
-        this.updatedAt = currentTime;
-    }
-
-    // for delete task case
-    public Task(int id) {
-        this.id = id;
-        this.description = "";
-        this.status = Status.TODO;
-        long currentTime = Calendar.getInstance().getTimeInMillis();
-        this.createdAt = currentTime;
-        this.updatedAt = currentTime;
-    }
-
     // for the add task case after calculating new id
     // copy constructor (sort of, copy everything but id)
     public Task(int id, Task copy) {
@@ -48,14 +28,44 @@ public class Task {
         this.updatedAt = copy.updatedAt;
     }
 
+    // for update task case
+    public Task(int id, String description) {
+        this.id = id;
+        this.description = description;
+        this.status = Status.TODO;
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        this.createdAt = currentTime;
+        this.updatedAt = currentTime;
+    }
+
+    // for mark task case
+    public Task(int id, Status status) {
+        this.id = id;
+        this.description = "";
+        this.status = status;
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        this.createdAt = currentTime;
+        this.updatedAt = currentTime;
+    }
+
     // for the update task case
     // copy constructor (sort of, copy everything but id and createdAt)
-    public Task(int id, long createdAt, Task copy) {
+    public Task(int id, String description, Status status, long createdAt, Task copy) {
         this.id = id;
-        this.description = copy.description;
-        this.status = copy.status;
+        this.description = description;
+        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = copy.updatedAt;
+    }
+
+    // for delete task case
+    public Task(int id) {
+        this.id = id;
+        this.description = "";
+        this.status = Status.TODO;
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        this.createdAt = currentTime;
+        this.updatedAt = currentTime;
     }
 
     public int getId() {

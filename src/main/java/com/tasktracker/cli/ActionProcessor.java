@@ -3,10 +3,7 @@ package com.tasktracker.cli;
 import com.tasktracker.cli.exceptions.ActionProcessingException;
 import com.tasktracker.cli.exceptions.ActionValidationException;
 import com.tasktracker.cli.models.*;
-import com.tasktracker.cli.models.actions.AddAction;
-import com.tasktracker.cli.models.actions.DeleteAction;
-import com.tasktracker.cli.models.actions.ListAction;
-import com.tasktracker.cli.models.actions.UpdateAction;
+import com.tasktracker.cli.models.actions.*;
 
 import java.util.List;
 
@@ -98,7 +95,21 @@ public final class ActionProcessor {
         catch (Exception e) {
             throw new ActionProcessingException(e.getMessage(), e.getCause());
         }
+    }
 
+    public void mark(int id, Status status) throws ActionProcessingException {
+        MarkAction markAction = new MarkAction(id, status);
 
+        try {
+            markAction.validateInputs();
+            Task task = new Task(markAction.getId(), markAction.getStatus());
+            this.store.markTask(task);
+        }
+        catch (ActionValidationException e) {
+            throw new ActionProcessingException(e.getMessage(), e);
+        }
+        catch (Exception e) {
+            throw new ActionProcessingException(e.getMessage(), e.getCause());
+        }
     }
 }

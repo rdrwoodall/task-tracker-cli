@@ -1,6 +1,7 @@
 package com.tasktracker.cli;
 
 import com.tasktracker.cli.exceptions.ActionProcessingException;
+import com.tasktracker.cli.models.Status;
 
 import java.util.Arrays;
 
@@ -24,6 +25,7 @@ public class Main {
                 String taskStatus = actionRestArgs.length > 0 ? actionRestArgs[0] : "";
                 try {
                     processor.add(taskStatus);
+                    processor.list("");
                 } catch (ActionProcessingException e) {
                     handleException(action, e);
                 }
@@ -34,6 +36,7 @@ public class Main {
                 String taskStatus = actionRestArgs.length > 1 ? actionRestArgs[1] : "";
                 try {
                     processor.update(taskId, taskStatus);
+                    processor.list("");
                 } catch (ActionProcessingException e) {
                     handleException(action, e);
                 }
@@ -41,43 +44,55 @@ public class Main {
             }
             case "delete": {
                 int taskId = actionRestArgs.length > 0 ? Integer.parseInt(actionRestArgs[0]) : -1;
-                String taskStatus = actionRestArgs.length > 1 ? actionRestArgs[1] : "";
                 try {
                     processor.delete(taskId);
+                    processor.list("");
                 } catch (ActionProcessingException e) {
                     handleException(action, e);
                 }
                 break;
             }
             case "mark-in-progress": {
-                // TODO: arg required, validate arg - has to be integer and id present in json
-                int taskId = Integer.parseInt(actionRestArgs[0]);
-                System.out.println("marking " + taskId + " in progress");
+                int taskId = actionRestArgs.length > 0 ? Integer.parseInt(actionRestArgs[0]) : -1;
+                try {
+                    processor.mark(taskId, Status.IN_PROGRESS);
+                    processor.list("");
+                } catch (ActionProcessingException e) {
+                    handleException(action, e);
+                }
                 break;
             }
             case "mark-done": {
-                // TODO: arg required, validate arg - has to be integer and id present in json
-                int taskId = Integer.parseInt(actionRestArgs[0]);
-                System.out.println("marking " + taskId + " done");
+                int taskId = actionRestArgs.length > 0 ? Integer.parseInt(actionRestArgs[0]) : -1;
+                try {
+                    processor.mark(taskId, Status.DONE);
+                    processor.list("");
+                } catch (ActionProcessingException e) {
+                    handleException(action, e);
+                }
                 break;
             }
             case "mark-todo": {
-                // TODO: arg required, validate arg - has to be integer and id present in json
-                int taskId = Integer.parseInt(actionRestArgs[0]);
-                System.out.println("marking " + taskId + " todo");
+                int taskId = actionRestArgs.length > 0 ? Integer.parseInt(actionRestArgs[0]) : -1;
+                try {
+                    processor.mark(taskId, Status.TODO);
+                    processor.list("");
+                } catch (ActionProcessingException e) {
+                    handleException(action, e);
+                }
                 break;
             }
             case "list": {
-                String status = actionRestArgs.length > 0 ? actionRestArgs[0] : "";
+                String rawStatus = actionRestArgs.length > 0 ? actionRestArgs[0] : "";
                 try {
-                    processor.list(status);
+                    processor.list(rawStatus);
                 } catch (ActionProcessingException e) {
                     handleException(action , e);
                 }
                 break;
             }
             default: {
-                System.err.println("Unknown action, select from [add | update | delete | mark-in-progress | mark-done | list]");
+                System.err.println("Unknown action, select from [add | update | delete | mark-in-progress | mark-done | mark-todo | list]");
             }
         }
     }
