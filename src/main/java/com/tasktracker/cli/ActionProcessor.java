@@ -2,7 +2,8 @@ package com.tasktracker.cli;
 
 import com.tasktracker.cli.exceptions.ActionProcessingException;
 import com.tasktracker.cli.exceptions.ActionValidationException;
-import com.tasktracker.cli.models.*;
+import com.tasktracker.cli.models.Status;
+import com.tasktracker.cli.models.Task;
 import com.tasktracker.cli.models.actions.*;
 
 import java.util.List;
@@ -11,26 +12,24 @@ import java.util.List;
  * ActionProcessor is responsible for generating an Action and Task based on the users input.
  * Once the Action is generated/validated, the Task is passed to the TaskStore for further processing
  * (i.e. write/read).
- * */
+ */
 public final class ActionProcessor {
     TaskStore store;
 
     public ActionProcessor() {
-        this.store = new TaskStore();
+        store = new TaskStore();
     }
 
-    public void add(String taskStatus) throws ActionProcessingException {
-        AddAction addAction = new AddAction(taskStatus);
+    public void add(String description) throws ActionProcessingException {
+        AddAction addAction = new AddAction(description);
 
         try {
             addAction.validate();
             Task task = new Task(addAction.getDescription());
-            this.store.addTask(task);
-        }
-        catch (ActionValidationException e) {
+            store.addTask(task);
+        } catch (ActionValidationException e) {
             throw new ActionProcessingException(e.getMessage(), e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ActionProcessingException(e.getMessage(), e.getCause());
         }
     }
@@ -41,12 +40,10 @@ public final class ActionProcessor {
 
         try {
             listAction.validate();
-            tasks = this.store.getTasks(listAction);
-        }
-        catch (ActionValidationException e) {
+            tasks = store.getTasks(listAction.getStatus());
+        } catch (ActionValidationException e) {
             throw new ActionProcessingException(e.getMessage(), e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ActionProcessingException(e.getMessage(), e.getCause());
         }
 
@@ -63,18 +60,16 @@ public final class ActionProcessor {
         }
     }
 
-    public void update(int id, String status) throws ActionProcessingException {
-        UpdateAction updateAction = new UpdateAction(id, status);
+    public void update(int id, String description) throws ActionProcessingException {
+        UpdateAction updateAction = new UpdateAction(id, description);
 
         try {
             updateAction.validateInputs();
             Task task = new Task(updateAction.getId(), updateAction.getDescription());
-            this.store.updateTask(task);
-        }
-        catch (ActionValidationException e) {
+            store.updateTask(task);
+        } catch (ActionValidationException e) {
             throw new ActionProcessingException(e.getMessage(), e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ActionProcessingException(e.getMessage(), e.getCause());
         }
 
@@ -87,12 +82,10 @@ public final class ActionProcessor {
         try {
             deleteActionAction.validateInputs();
             Task task = new Task(deleteActionAction.getId());
-            this.store.deleteTask(task);
-        }
-        catch (ActionValidationException e) {
+            store.deleteTask(task);
+        } catch (ActionValidationException e) {
             throw new ActionProcessingException(e.getMessage(), e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ActionProcessingException(e.getMessage(), e.getCause());
         }
     }
@@ -103,12 +96,10 @@ public final class ActionProcessor {
         try {
             markAction.validateInputs();
             Task task = new Task(markAction.getId(), markAction.getStatus());
-            this.store.markTask(task);
-        }
-        catch (ActionValidationException e) {
+            store.markTask(task);
+        } catch (ActionValidationException e) {
             throw new ActionProcessingException(e.getMessage(), e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ActionProcessingException(e.getMessage(), e.getCause());
         }
     }

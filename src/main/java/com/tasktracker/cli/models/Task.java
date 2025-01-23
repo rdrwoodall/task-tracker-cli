@@ -3,7 +3,7 @@ package com.tasktracker.cli.models;
 import java.util.Calendar;
 
 public class Task {
-    int id = -1;
+    int id;
     String description;
     Status status;
     long createdAt;
@@ -72,11 +72,17 @@ public class Task {
         return id;
     }
 
-    public Status getStatus() { return status; }
+    public Status getStatus() {
+        return status;
+    }
 
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public long getCreatedAt() { return createdAt; }
+    public long getCreatedAt() {
+        return createdAt;
+    }
 
     @Override
     public String toString() {

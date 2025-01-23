@@ -4,9 +4,9 @@ import com.tasktracker.cli.exceptions.ActionValidationException;
 import com.tasktracker.cli.models.Status;
 
 public class ListAction extends Action {
-    static final String STATUS_STRING_DONE = "done";
-    static final String STATUS_STRING_TODO = "todo";
-    static final String STATUS_STRING_IN_PROGRESS = "in-progress";
+    public static final String STATUS_STRING_DONE = "done";
+    public static final String STATUS_STRING_TODO = "todo";
+    public static final String STATUS_STRING_IN_PROGRESS = "in-progress";
 
     private Status status = null;
     private final String rawStatus;

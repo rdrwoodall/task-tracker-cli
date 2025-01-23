@@ -2,7 +2,7 @@ package com.tasktracker.cli.models.actions;
 
 import com.tasktracker.cli.exceptions.ActionValidationException;
 
-public class DeleteAction extends Action{
+public class DeleteAction extends Action {
     int id;
 
     public DeleteAction(int id) {

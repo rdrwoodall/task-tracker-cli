@@ -2,7 +2,6 @@ package com.tasktracker.cli;
 
 import com.google.gson.Gson;
 import com.tasktracker.cli.exceptions.TaskStoreException;
-import com.tasktracker.cli.models.actions.ListAction;
 import com.tasktracker.cli.models.Status;
 import com.tasktracker.cli.models.Store;
 import com.tasktracker.cli.models.Task;
@@ -46,17 +45,16 @@ public class TaskStore {
         System.out.println("Add: successfully saved new task with id [" + finalAddTask.getId() + "]");
     }
 
-    public List<Task> getTasks(ListAction action) throws TaskStoreException {
+    public List<Task> getTasks(Status status) throws TaskStoreException {
         System.out.println("List: retrieving tasks...");
         Store savedData = readStore();
-        Status actionStatus = action.getStatus();
         List<Task> tasks = savedData.getTasks();
 
-        if (actionStatus == null) {
+        if (status == null) {
             return tasks;
         } else {
-            System.out.println("List: filtering tasks by status: " + actionStatus);
-            return tasks.stream().filter(t -> t.getStatus() == actionStatus).collect(Collectors.toList());
+            System.out.println("List: filtering tasks by status: " + status);
+            return tasks.stream().filter(t -> t.getStatus() == status).collect(Collectors.toList());
         }
     }
 
